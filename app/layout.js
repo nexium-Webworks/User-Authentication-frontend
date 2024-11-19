@@ -1,9 +1,8 @@
 import "./globals.css";
 
 
-
 export const metadata = {
-  title: "dev",
+  title: "NEXIUM",
   description: "",
 };
 
