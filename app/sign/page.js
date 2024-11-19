@@ -28,18 +28,18 @@ const SignUp = () => {
     setSuccess("");
 
     try {
-     
       const response = await axios.post("http://localhost:4000/user/signup", formData);
 
-  
       setSuccess("Signup successful! Welcome, " + formData.username);
       console.log("Response:", response.data);
 
-     
       setFormData({ username: "", password: "" });
     } catch (err) {
-      
-      setError(err.response?.data?.message || "Something went wrong!");
+      if (err.response?.status === 409) {
+        setError("User already exists. Please choose a different username.");
+      } else {
+        setError(err.response?.data?.message || "Something went wrong!");
+      }
       console.error("Error:", err);
     } finally {
       setLoading(false);
