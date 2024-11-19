@@ -29,7 +29,7 @@ const SignUp = () => {
 
     try {
      
-      const response = await axios.post("https://MOON_BHAI_API_DALDO/signup", formData);
+      const response = await axios.post("http://localhost:4000/user/signup", formData);
 
   
       setSuccess("Signup successful! Welcome, " + formData.username);
