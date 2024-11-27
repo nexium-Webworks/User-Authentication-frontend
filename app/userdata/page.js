@@ -1,23 +1,27 @@
 // app/user_data/page.js
 
-'use client' // Ensures this component is rendered client-side
+'use client' // Ensures this component is rendered on the client side
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter(); // Router is available now since this is a client-side component
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login'; 
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem('token'); // Get the token from localStorage
+      const token = localStorage.getItem('token'); // Get token from localStorage
 
       if (!token) {
-        router.push('/login'); // Redirect to login if no token is found
+        // If no token, redirect to login manually
+        window.location.href = '/login'; // Redirect to login page
         return;
       }
 
@@ -40,7 +44,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, [router]); // Run the effect again if router changes (not typically necessary)
+  }, []); // Empty dependency array, run only once when the component is mounted
 
   if (loading) return <div>Loading...</div>; // Show loading text while fetching data
   if (error) return <div>{error}</div>; // Show error message if something goes wrong
@@ -50,6 +54,7 @@ const ProfilePage = () => {
       <h1>User Profile</h1>
       <p><strong>Username:</strong> {user?.username}</p>
       <p><strong>User ID:</strong> {user?.id}</p>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };

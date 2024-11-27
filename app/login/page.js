@@ -1,7 +1,9 @@
-'use client'
+// app/login/page.js
+
+'use client' // Ensures this component is rendered on the client side
+
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';  // Import from next/navigation instead of next/router
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -9,7 +11,6 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const router = useRouter();  // Now using useRouter() correctly
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,21 +19,21 @@ const LoginPage = () => {
     setSuccess('');
 
     try {
-      // Make the login API request
       const response = await axios.post('http://localhost:4000/api/user/signin', {
         username,
         password,
       });
 
-      // On success, store the token in localStorage or sessionStorage
-      const token = response.data.token;
-      localStorage.setItem('token', token); // Store token in localStorage
-
+      // Log success and save token to localStorage
       console.log("Login Successful:", response.data);
       setSuccess("Login successful! Redirecting...");
 
+      const token = response.data.token;
+      localStorage.setItem('token', token);  // Store token in localStorage
+
       // Redirect to profile page after successful login
-      router.push('/user_data');  // Correct redirect after login
+      window.location.href = '/userdata';  // Navigate to the profile page manually
+
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
       console.error("Login Error:", err);
@@ -72,9 +73,7 @@ const LoginPage = () => {
             type="submit"
             disabled={loading}
             className={`w-full px-4 py-2 text-white rounded-lg focus:outline-none focus:ring focus:ring-blue-300 ${
-              loading
-                ? 'bg-blue-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+              loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
             {loading ? 'Logging in...' : 'Login'}
@@ -82,12 +81,6 @@ const LoginPage = () => {
         </form>
         {error && <p className="text-sm text-red-600 text-center">{error}</p>}
         {success && <p className="text-sm text-green-600 text-center">{success}</p>}
-        <p className="text-sm text-center text-gray-600">
-          Don't have an account?{' '}
-          <a href="/signup" className="text-blue-600 hover:underline">
-            Sign up
-          </a>
-        </p>
       </div>
     </div>
   );
