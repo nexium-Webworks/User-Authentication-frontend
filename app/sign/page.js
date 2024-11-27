@@ -28,7 +28,7 @@ const SignUp = () => {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:4000/user/signup", formData);
+      const response = await axios.post("http://localhost:4000/api/user/signup", formData);
 
       setSuccess("Signup successful! Welcome, " + formData.username);
       console.log("Response:", response.data);

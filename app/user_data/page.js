@@ -1,38 +1,57 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+// app/user_data/page.js
 
-const UserProfile = () => {
+'use client' // Ensures this component is rendered client-side
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+
+const ProfilePage = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter(); // Router is available now since this is a client-side component
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem('token'); // Get the token from localStorage
+
+      if (!token) {
+        router.push('/login'); // Redirect to login if no token is found
+        return;
+      }
+
+      setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:4000/profile", {
+        // Fetch the profile using the token
+        const response = await axios.get('http://localhost:4000/api/user/profile', {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Pass the token in the request headers
           },
         });
-        setUser(response.data.user);
+
+        setUser(response.data.user);  // Store user profile data in state
       } catch (err) {
-        console.error("Error fetching profile:", err);
+        setError('Error fetching profile.');
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserProfile();
-  }, []);
+    fetchProfile();
+  }, [router]); // Run the effect again if router changes (not typically necessary)
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>; // Show loading text while fetching data
+  if (error) return <div>{error}</div>; // Show error message if something goes wrong
 
   return (
     <div>
-      <h1>Welcome, {user.username}</h1>
-      <p>Email: {user.email}</p>
-      <p>CreatedAt: {user.createdAt}</p>
+      <h1>User Profile</h1>
+      <p><strong>Username:</strong> {user?.username}</p>
+      <p><strong>User ID:</strong> {user?.id}</p>
     </div>
   );
 };
 
-export default UserProfile;
+export default ProfilePage;
