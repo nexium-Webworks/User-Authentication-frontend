@@ -1,9 +1,8 @@
-// app/login/page.js
-
 'use client' // Ensures this component is rendered on the client side
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -81,6 +80,12 @@ const LoginPage = () => {
         </form>
         {error && <p className="text-sm text-red-600 text-center">{error}</p>}
         {success && <p className="text-sm text-green-600 text-center">{success}</p>}
+        <p className="mt-4 text-sm text-center text-gray-600">
+          Dont have an account{" "}
+          <Link href="/sign" className="text-blue-600 hover:underline">
+            Sign up
+          </Link>
+          </p>
       </div>
     </div>
   );
